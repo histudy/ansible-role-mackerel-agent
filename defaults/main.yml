@@ -1,6 +1,6 @@
 ---
 mackerel_agent_cfg:
-  apikey: ""
+  apikey: "set_your_mackerel_api_key"
   # pidfile: /var/run/mackerel-agent.pid
   # root: /var/lib/mackerel-agent
   # verbose: no
@@ -25,4 +25,4 @@ mackerel_agent_cfg:
 
 mackerel_agent_install_agent_plugins: no
 mackerel_agent_install_check_plugins: no
-mackerel_agent_active_and_enabled_on_system_startup: yes
+mackerel_agent_start_on_setup: yes
