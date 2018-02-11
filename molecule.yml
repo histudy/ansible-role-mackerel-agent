@@ -1,31 +1,18 @@
 ---
 ansible:
   group_vars:
-    all:
-      mackerel_agent_start_on_setup: no
-      mackerel_agent_cfg:
-        apikey: "set_your_mackerel_api_key"
-        pidfile: /var/run/mackerel-agent.pid
-        root: /var/lib/mackerel-agent
-        verbose: no
-        display_name: My Host
-        http_proxy: http://localhost:8080
-        roles:
-          - My-Service:app
-          - Another-Service:db
-        host_status:
-          on_start: working
-          on_stop: poweroff
-        filesystems:
-          ignore: /dev/ram.*
-          use_mountpoint: yes
-        plugin:
-          metrics:
-            apache2: mackerel-plugin-apache2
-          checkes:
-            log: "/path/to/check-log --file=/path/to/file --pattern=REGEXP --warning-over=N --critical-over=N"
-            procs:
-              command: "/path/to/check-procs --pattern=PROCESS_NAME --state=STATE --warning-under=N"
+    default:
+      mackerel_agent_api_key: "{{ lookup('env', 'MACKEREL_API_KEY') }}"
+    enable_all:
+      mackerel_agent_api_key: "{{ lookup('env', 'MACKEREL_API_KEY') }}"
+      mackerel_agent_install_agent_plugins: yes
+      mackerel_agent_install_check_plugins: yes
+      mackerel_agent_active_and_enabled_on_system_startup: yes
+    disable_all:
+      mackerel_agent_api_key: "disable_all_api_key"
+      mackerel_agent_install_agent_plugins: no
+      mackerel_agent_install_check_plugins: no
+      mackerel_agent_active_and_enabled_on_system_startup: no
 dependency:
   name: galaxy
 driver:
@@ -33,16 +20,22 @@ driver:
 vagrant:
   platforms:
     - name: stretch
-      box: histudy/stretch
+      box: wate/debian-9
   providers:
     - name: virtualbox
       type: virtualbox
       options:
         memory: 512
-        cpus: 2
+        cpus: 1
   instances:
     - name: mackerel-agent
       ansible_groups:
-        - group1
+        - default
+    - name: enable-all
+      ansible_groups:
+        - enable_all
+    - name: disable-all
+      ansible_groups:
+        - disable_all
 verifier:
   name: serverspec

@@ -1,6 +1,5 @@
 require 'serverspec'
 require 'net/ssh'
-require 'yaml'
 
 host = ENV['TARGET_HOST']
 ssh_config_files = ['./.vagrant/ssh-config'] + Net::SSH::Config.default_files
