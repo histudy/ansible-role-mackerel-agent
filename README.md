@@ -6,24 +6,13 @@ mackerel-agentのインストールとセットアップを行います。
 Role Variables
 --------------
 
-| 変数名                                              | 内容                                                       |
-| --------------------------------------------------- | ---------------------------------------------------------- |
-| mackerel_agent_api_key                              | mackerel-agentのAPIキーを設定します                        |
-| mackerel_agent_cfg                                  | その他のmackerel-agentの設定を定義します                   |
-| mackerel_agent_install_agent_plugins                | mackerel-agent-pluginsをインストールするか否かを設定します |
-| mackerel_agent_install_check_plugins                | mackerel-check-pluginsをインストールするか否かを設定します |
-| mackerel_agent_active_and_enabled_on_system_startup | mackerel-agentをサービスの状態を設定します                 |
-
-
 ### mackerel_agent_api_key
 
-mackerel-agentのAPIキーを設定します。
+mackerel-agentのAPIキーを指定します。
 
 ### mackerel_agent_cfg
 
-mackerel-agentの設定を定義します。
-
-#### Example
+mackerel-agentの設定を指定します。
 
 ```yml
 mackerel_agent_cfg:
@@ -43,11 +32,28 @@ mackerel_agent_cfg:
     use_mountpoint: yes
   plugin:
     metrics:
-      apache2: mackerel-plugin-apache2
+      apache2: /usr/bin/mackerel-plugin-apache2
+      mailq: /usr/bin/mackerel-plugin-mailq -M postfix
     checkes:
-      log: "/path/to/check-log --file=/path/to/file --pattern=REGEXP --warning-over=N --critical-over=N"
+      log: "/usr/bin/check-log --file=/path/to/file --pattern=REGEXP --warning-over=N --critical-over=N"
       procs:
-        command: "/path/to/check-procs --pattern=PROCESS_NAME --state=STATE --warning-under=N"
+        command: "/usr/bin/check-procs --pattern=PROCESS_NAME --state=STATE --warning-under=N"
+      load_average:
+        command: "/usr/bin/check-load -w 3,2,1 -c 3,2,1"
+        # optional
+        notification_interval: 60
+        max_check_attempts: 1
+        check_interval: 5
+        timeout_seconds: 45
+        prevent_alert_auto_close: yes
+        memo: "メモをここに記載することができます"
+        env:
+          ENV_NAME: value
+        action:
+          command: "pa -auxf"
+          env:
+            ENV_NAME: value
+          user: "mackerel"
 ```
 
 ### mackerel_agent_install_agent_plugins
@@ -55,15 +61,13 @@ mackerel_agent_cfg:
 この変数に`true`が設定されている場合、  
 mackerel-agent-pluginsのインストールを行います。
 
-#### Example
-
 ```yml
 mackerel_agent_install_check_plugins: no
 ```
 
 ### mackerel_agent_install_check_plugins
 
-この変数に`true`が設定されている場合、
+この変数に`true`が設定されている場合、  
 mackerel-check-pluginsのインストールを行います。
 
 #### Example
@@ -74,7 +78,7 @@ mackerel_agent_install_check_plugins: no
 
 ### mackerel_agent_active_and_enabled_on_system_startup
 
-mackerel-agentを起動させるかどうかを設定します。
+mackerel-agentを起動させるかどうかを指定します。
 
 この変数に`true`が設定されている場合、
 mackerel-agentを有効に設定し起動させます。
@@ -95,7 +99,7 @@ Example Playbook
 ```yml
 - hosts: servers
   roles:
-     - { role: mackerel-agent }
+    - role: mackerel-agent
 ```
 
 License
