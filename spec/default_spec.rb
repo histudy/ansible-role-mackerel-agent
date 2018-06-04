@@ -13,6 +13,7 @@ end
 describe file('/etc/mackerel-agent/mackerel-agent.conf') do
   it { should exist }
   it { should be_file }
+  it { should be_mode 600 }
   its(:content) { should match(/^apikey = "#{e(property['mackerel_agent_api_key'])}"$/) }
   mackerel_cfg = property['mackerel_agent_cfg']
   mackerel_cfg = property['mackerel_agent_cfg'].to_h if property['mackerel_agent_cfg'].is_a?(Array)
