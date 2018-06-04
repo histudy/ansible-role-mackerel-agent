@@ -70,8 +70,6 @@ mackerel_agent_install_check_plugins: no
 この変数に`true`が設定されている場合、  
 mackerel-check-pluginsのインストールを行います。
 
-#### Example
-
 ```yml
 mackerel_agent_install_check_plugins: no
 ```
@@ -86,12 +84,9 @@ mackerel-agentを有効に設定し起動させます。
 この変数に`false`が設定されている場合、
 mackerel-agentを無効に設定し停止させます。
 
-#### Example
-
 ```yml
 mackerel_agent_active_and_enabled_on_system_startup: yes
 ```
-
 
 Example Playbook
 ----------------
